@@ -19,14 +19,14 @@ If this code is used in a commercial product consider supporting us and/or our r
 * [License](#license)
 
 ## General Information
-- This project was developed for data collection in our lab and to demonstrate how to think about eye-tracking using consumer and entertainment focused hardware/software systems for human subjects data collection. It will almost certainly be obsolete before anyone uses it, but hopefully the some of the basics and approaches will make future resaerch and development easier for researchers. My own process and frustations 
+- This project was developed for data collection in our lab and to demonstrate how to think about eye-tracking using consumer and entertainment focused hardware/software systems for human subjects data collection. It will almost certainly be obsolete before anyone uses it, but hopefully the some of the basics and approaches will make future research and development easier for researchers. My own process and frustrations 
 
 ## Technologies Used
 - Unity (original data collected on 2018.4, tested on 2019.4 and seemed to work) 
 - HTC Vive Pro Eye
 - SRanipal v. 1.3.3 (download from HTC) 
 - OpenVR (included)
-- SteamVR - It is hard to choose here, autoupdates are sneaky. So far the current version works (as of 10/3/22). One version of SteamVR broke the callback to SRanipal and resulted in intermitant dropped data frames but that seems fixed now. Keep an eye on this. 
+- SteamVR - It is hard to choose here, autoupdates are sneaky. So far the current version works (as of 10/3/22). One version of SteamVR broke the callback to SRanipal and resulted in intermittent dropped data frames but that seems fixed now. Keep an eye on this. 
 - Only tested in Windows 10
 
 ## Features
@@ -37,20 +37,18 @@ List the ready features here:
 - Helper functions for calculating key data variables
 - Write relevant data to .csv file
 
-
 ## Setup
 SRanipal SDK is required to run. Download from (https://developer.vive.com/resources/vive-sense/eye-and-facial-tracking-sdk/). 
 - Install relevant files in the assets folder (Scripts file is absolutely necessary SranipalEyeFramework prefab is also used)
 - Eye tracking must be enabled from inside the headset for first use
-- SRanipalEyeFramework needs some code added to it from AdditionsToSRFramework.cs. Uncomment the code in AdditionsToSRFramework.cs and use it to replace or add code from SRanipalEyeFramework.cs. This adds an additional state messsage to the framework and delays start of the framework to solve an issue with load times. You can test without these additions, it has been a while since I have tried it.
+- SRanipalEyeFramework needs some code added to it from AdditionsToSRFramework.cs. Uncomment the code in AdditionsToSRFramework.cs and use it to replace or add code from SRanipalEyeFramework.cs. This adds an additional state message to the framework and delays start of the framework to solve an issue with load times. You can test without these additions, it has been a while since I have tried it.
 
 HTC Vive Pro Eye can be setup like a regular Vive/Vive Pro and run through SteamVR. 
 
 The Unity project should be setup to run VR/XR.
-- NOTE: Incompatable with XR manager in 2019.4 and later. Works in 2019.4 using old VR system. The issue with the new XR manager is in the call to OpenVR to get the HMD position/orientation at 120hz. If you don't need these values then this can be bypassed and should work if you pass the camera values into the recieve thread with global vars. We would be interested in any solutions to make this work with XR manager. 
+- NOTE: Incompatible with XR manager in 2019.4 and later. Works in 2019.4 using old VR system. The issue with the new XR manager is in the call to OpenVR to get the HMD position/orientation at 120hz. If you don't need these values then this can be bypassed and should work if you pass the camera values into the receive thread with global vars. We would be interested in any solutions to make this work with XR manager. 
 
 Make sure relevant scenes are added to the build settings (in our tests all setting seem to move over just fine). 
-
 
 ## Usage
 If all goes well, with a HTC Vive Pro Eye connected to the computer, then use the Menu_PreSelectedOrder scene to initialize. 
@@ -67,37 +65,35 @@ Moving to your own project:
 The key files are **ViveEyeDevice.cs** and **ViveEyeController.cs** found in Assets\Scripts_Vive\EyeTracking\. 
 
 *ViveEyeDevice.cs* handles the thread for pulling data from eye tracker at 120hz. 
-- ViveEyeDevice uses an Action that can be subscribed to in order to effeciently share data with other classes
-- EyeData is parsed to a dictionary here. This isn't necessary as the eyedata parameter can be passsed around. It is partly done for convinience in the data writting phase. Switching to eyedata will require some reworking of code in the rest of the project.
+- ViveEyeDevice uses an Action that can be subscribed to in order to efficiently share data with other classes
+- EyeData is parsed to a dictionary here. This isn't necessary as the eyedata parameter can be passed around. It is partly done for convenience in the data writing phase. Switching to eyedata will require some reworking of code in the rest of the project.
 - This is not a MonoBehaviour derived class. It cannot be added to a gameobject in the editor, see how it is initialized in ViveEyeController.cs.
-- Note this runs a seperate thread from Unity. It is a good idea to call StopDevice() on shutdown from a MonoBehaviour to ensure that the thread is properly shutdown. 
+- Note this runs a separate thread from Unity. It is a good idea to call StopDevice() on shutdown from a MonoBehaviour to ensure that the thread is properly shutdown. 
 
-*ViveEyeController.cs* is where all of the eye-tracking calcluations are handled and data is transferred between the 120hz thread and the main Unity thread (90hz). This class is designed to be extended for one's own purposes.
-- Recieve is invoked every time new eyedata is recieved by ViveEyeDevice. This triggers a cascade of calculations starting with checking the current state of the HMD (and controllers) from OpenVR. 
+*ViveEyeController.cs* is where all of the eye-tracking calculations are handled and data is transferred between the 120hz thread and the main Unity thread (90hz). This class is designed to be extended for one's own purposes.
+- Receive is invoked every time new eyedata is recieved by ViveEyeDevice. This triggers a cascade of calculations starting with checking the current state of the HMD (and controllers) from OpenVR. 
 - AdditionalVars can be calculated for ones own purposes. 
-- Data from Recieve is passed to the main Unity thread via a ConcurrentQueue. Update checks and clears the queue so that only the latest data from the eye based calculations are used for the Unity interactions. 
-- I have used publically accessable varibles so that other scripts can refernce the instance of ViveEyeController in the scene and read those values. See example of this in InitializerGazeBehavior.cs
+- Data from Receive is passed to the main Unity thread via a ConcurrentQueue. Update checks and clears the queue so that only the latest data from the eye based calculations are used for the Unity interactions. 
+- I have used publicly accessible variables so that other scripts can reference the instance of ViveEyeController in the scene and read those values. See example of this in InitializerGazeBehavior.cs
 
 *DataRecorder.cs* handles creating csv files and recording data
-- Called from the end of Recieve in ViveEyeController. 
+- Called from the end of Receive in ViveEyeController. 
 - Need to setup a new file and start recording.
 - recording can happen with each new eyedata frame (safer but may cause slow downs, though I haven't experienced issues) or when recording is stopped (could cause a bit of hang for long record sessions and risks losing data on unexpected shutdown).
-- In example scenes recording is handled in the the experiment logic of the relevant TaskController derived class
+- In example scenes recording is handled in the experiment logic of the relevant TaskController derived class
 - Recorded files found in \users\<username>\AppData\LocalLow\\<CompanyName>\\<UnityProjectName>\EyeRecordingData\ (company name may  be default company if you do not set it or iLab_Skovde, you may also set company name yourself in Unity settings)
 
-
-*TaskController.cs* is used to run the trial logic and load scenes. There are versions of this for each of the example scenes. Using coroutines is a little impicise for timing, so only use that when millisecond precision isn't needed. 
-
+*TaskController.cs* is used to run the trial logic and load scenes. There are versions of this for each of the example scenes. Using coroutines is a little imprecise for timing, so only use that when millisecond precision isn't needed. 
 
 Various other files handle stimulus placement and sizing in eye angle units. 
 
 ## Project Status
 Project is: _Limited Development_
 
-Relevant updates made in the lab will be pushed here or on my Github site. We will not be actively monitoring issues or pull requests. We are not professional software developers, just researchers. We hope something here can help a few people out. We're interested in how it is used or interesting ideas, but have all the normal pressures and expectations of acadademic life and none of the pay of developers.
+Relevant updates made in the lab will be pushed here or on my Github site. We will not be actively monitoring issues or pull requests. We are not professional software developers, just researchers. We hope something here can help a few people out. We're interested in how it is used or interesting ideas, but have all the normal pressures and expectations of academic life and none of the pay of developers.
 
 ## Contact
-Primary development done by Maurice Lamb (mauricelamb.com), I'm currently a Senior Lecturer at the University of Skövde. My resaerch is focused on HRI, artifical agents, and human-human interaction. 
+Primary development done by Maurice Lamb (mauricelamb.com), I'm currently a Senior Lecturer at the University of Skövde. My research is focused on HRI, artificial agents, and human-human interaction. 
 
 ## License
 This project is open source and available under the BSD 2-Clause License
