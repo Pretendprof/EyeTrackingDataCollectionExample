@@ -69,7 +69,8 @@ The key files are **ViveEyeDevice.cs** and **ViveEyeController.cs** found in Ass
 *ViveEyeDevice.cs* handles the thread for pulling data from eye tracker at 120hz. 
 - ViveEyeDevice uses an Action that can be subscribed to in order to effeciently share data with other classes
 - EyeData is parsed to a dictionary here. This isn't necessary as the eyedata parameter can be passsed around. It is partly done for convinience in the data writting phase. Switching to eyedata will require some reworking of code in the rest of the project.
-- This is not a MonoBehaviour derived class. It cannot be added to a gameobject in the editor, see how it is initialized in ViveEyeController.cs.*- Note this runs a seperate thread from Unity. It is a good idea to call StopDevice() on shutdown from a MonoBehaviour to ensure that the thread is properly shutdown. 
+- This is not a MonoBehaviour derived class. It cannot be added to a gameobject in the editor, see how it is initialized in ViveEyeController.cs.
+- Note this runs a seperate thread from Unity. It is a good idea to call StopDevice() on shutdown from a MonoBehaviour to ensure that the thread is properly shutdown. 
 
 *ViveEyeController.cs* is where all of the eye-tracking calcluations are handled and data is transferred between the 120hz thread and the main Unity thread (90hz). This class is designed to be extended for one's own purposes.
 - Recieve is invoked every time new eyedata is recieved by ViveEyeDevice. This triggers a cascade of calculations starting with checking the current state of the HMD (and controllers) from OpenVR. 
@@ -82,7 +83,7 @@ The key files are **ViveEyeDevice.cs** and **ViveEyeController.cs** found in Ass
 - Need to setup a new file and start recording.
 - recording can happen with each new eyedata frame (safer but may cause slow downs, though I haven't experienced issues) or when recording is stopped (could cause a bit of hang for long record sessions and risks losing data on unexpected shutdown).
 - In example scenes recording is handled in the the experiment logic of the relevant TaskController derived class
-- Recorded files found in \users\<username>\AppData\LocalLow\<CompanyName>\<UnityProjectName>\EyeRecordingData\ (company name may  be default company if you do not set it or iLab_Skovde, you may also set company name yourself in Unity settings)
+- Recorded files found in \users\<username>\AppData\LocalLow\\<CompanyName>\\<UnityProjectName>\EyeRecordingData\ (company name may  be default company if you do not set it or iLab_Skovde, you may also set company name yourself in Unity settings)
 
 
 *TaskController.cs* is used to run the trial logic and load scenes. There are versions of this for each of the example scenes. Using coroutines is a little impicise for timing, so only use that when millisecond precision isn't needed. 
@@ -124,5 +125,3 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-You don't have to include all sections - just the one's relevant to your project
