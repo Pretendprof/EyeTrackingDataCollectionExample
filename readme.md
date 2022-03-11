@@ -1,11 +1,11 @@
-# Unity 120hz Eye Tracking Example
-This code provides an example of using the Vive Pro Eye tracker for VR eye tracking at full frame rate through SRanipal. Includes code for recording data and using data from eye tracker in Unity along with some simple experiment examples. 
+# Unity 120hz Eye Tracking in Virtual Reality
+This Unity project collects eye-tracking data from the Vive Pro Eye headset at full 120hz frame rate through SRanipal. The project includes code for recording data and using data from eye tracker in Unity along with some experiment examples. 
 
-Code is shared here as a service to academic research communities and hopefully it helps some of you researchers who have had to become developers in your spare time. If this code is directly used or inspires code for your own academic project please cite for any publications stemming from the project: 
+This code is shared here as a service to academic research communities and hopefully it helps some of you researchers who have had to become developers in your spare time. If this code is directly used or inspires code for your own project please cite for any publications stemming from the project: 
 
 Lamb, M., Brundin, M., Pérez Luque, E., Billing, E. (2022) Eye-tracking beyond peripersonal space in virtual reality: Validation and Best practices. Frontiers in Virtual Reality
 
-If this code is used in a commercial product consider supporting us and/or our research materially or financially. If it saves you time and money maybe pass it along?
+If this code is used in a commercial product consider supporting us and/or our research materially or financially. If it saves you time and money maybe pass it along? See the last section of this document for license information.
 
 ## Table of Contents
 * [General Info](#general-information)
@@ -19,10 +19,10 @@ If this code is used in a commercial product consider supporting us and/or our r
 * [License](#license)
 
 ## General Information
-- This project was developed for data collection in our lab and to demonstrate how to think about eye-tracking using consumer and entertainment focused hardware/software systems for human subjects data collection. It will almost certainly be obsolete before anyone uses it, but hopefully the some of the basics and approaches will make future research and development easier for researchers. My own process and frustrations 
+- This project was developed for data collection at the Interaction Lab, University of Skövde, Sweden. It also demonstrates how to think about eye-tracking for human subjects research using consumer and entertainment focused hardware/software systems. We hope that the approaches implemented here will make future research and development easier.
 
 ## Technologies Used
-- Unity (original data collected on 2018.4, tested on 2019.4 and seemed to work) 
+- Unity (original data collected on 2018.4, tested on 2019.4. Later versions of Unity will require adjustments of the code provided here as it is not compatible with XR manager)
 - HTC Vive Pro Eye
 - SRanipal v. 1.3.3 (download from HTC) 
 - OpenVR (included)
@@ -51,9 +51,8 @@ The Unity project should be setup to run VR/XR.
 Make sure relevant scenes are added to the build settings (in our tests all setting seem to move over just fine). 
 
 ## Usage
-If all goes well, with a HTC Vive Pro Eye connected to the computer, then use the Menu_PreSelectedOrder scene to initialize. 
+Connect the HTC Vive Pro Eyeto the computer and use the Menu_PreSelectedOrder scene to initialize. Make sure that SRanipalEyeFramework is set to eyedata v2.
 
-Make sure that SRanipalEyeFramework is set to eyedata v2
 
 Calibration should be run from the menu to make Start button interactable. Set a participant number and select start after calibration. After calibration rough statistic should be displayed in real-time. 
 
